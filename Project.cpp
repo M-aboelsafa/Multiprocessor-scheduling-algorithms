@@ -72,7 +72,7 @@ void match_prefrences(int processor[], int WillGoToTheQ[], process processes[])
     // First loop: Assign processes to processors if the processor is available
     for (int i = 0; i < 4; i++)
     {
-        if (WillGoToTheQ[i] != -1 && processor[processes[WillGoToTheQ[i]].last_processor] == -1)
+        if (WillGoToTheQ[i] != -1 && processes[WillGoToTheQ[i]].last_processor != -1 && processor[processes[WillGoToTheQ[i]].last_processor] == -1)
         {
             processor[processes[WillGoToTheQ[i]].last_processor] = WillGoToTheQ[i];
             WillGoToTheQ[i] = -1;
