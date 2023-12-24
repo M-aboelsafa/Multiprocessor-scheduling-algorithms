@@ -60,6 +60,18 @@ void Input(int n, process processes[])
         // processes[i].current_brust_time = processes[i].phases[0].first;
     }
 }
+struct CompareProcess {
+    const process *data;
+    CompareProcess(const process* d) : data(d) {}
+    bool operator()(int a, int b) const {
+        // Customize the comparison based on the variable
+       // if(data[a].arrive_time ==data[b].arrive_time)
+            return data[a].current_brust_time > data[b].current_brust_time;
+        /*else
+            return data[a].arrive_time > data[b].arrive_time;*/
+    }
+};
+
 void print(int endtime)
 {
     for (int j = 0; j < 4; j++) // no of processors
@@ -73,6 +85,40 @@ void print(int endtime)
     }
 }
 void IO_handler(int n, process processes[], queue<int> &my_queue, int &finised_processes, int t)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (processes[i].state == 0) // state IO
+        {
+            // cout << "IO handler " << i << "\n";
+            processes[i].time_consumed++;
+            if (processes[i].time_consumed == processes[i].current_brust_time) // IO Finished
+            {
+                processes[i].time_consumed = 0;
+                processes[i].phase_idx++;
+                if (processes[i].phase_idx < processes[i].n_phases)
+                {
+                    processes[i].state = processes[i].phases[processes[i].phase_idx].second;
+                    processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+                    if (processes[i].state)
+                    {
+                        // cout << "PUSH\n";
+                        my_queue.push(i);
+                    }
+                }
+                else
+                {
+                    // cout << "DONE\n";
+                    processes[i].state = 2;
+                    (finised_processes)++;
+                    processes[i].complete_time = t;
+                    processes[i].turn_around_time = t - processes[i].arrive_time;
+                }
+            }
+        }
+    }
+}
+void IO_handler_bypq(int n, process processes[], priority_queue<int,vector<int>,CompareProcess> &my_queue, int &finised_processes, int t)
 {
     for (int i = 0; i < n; i++)
     {
@@ -237,13 +283,18 @@ bool comparedByBurst(const process& p1,const process& p2)
     else
         return p1.arrive_time < p2.arrive_time;
 }
+
+
+
 void SJF(int size,process processes [] )
 {
     sort(processes,processes+size, comparedByBurst);
     int finished_processes=0,processor[4],WillGoToTheQ[4],i=0,pr;
     memset(processor,-1,sizeof processor);
     memset(WillGoToTheQ,-1,sizeof WillGoToTheQ);
-    queue<int>waiting;
+    CompareProcess cmp (processes);
+    priority_queue<int,vector<int>,CompareProcess>waiting(cmp);
+//    queue<int>waiting;
     for(int t=0;;t++)
     {
         int idx_p=0;
@@ -265,8 +316,8 @@ void SJF(int size,process processes [] )
             processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
             i++;
         }
-        if(!waiting.empty())
-            sort_queue(waiting,processes);
+        /*if(!waiting.empty())
+            sort_queue(waiting,processes);*/
         for(idx_p =0 ;idx_p<4;idx_p++)
         {
             if(processor[idx_p]==-1) // means that , that processor is ideal
@@ -274,7 +325,7 @@ void SJF(int size,process processes [] )
                 output[t][idx_p]="i";
                 if(!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p]=waiting.front();
+                    WillGoToTheQ[idx_p]=waiting.top();
                     waiting.pop();
                 }
                 continue;
@@ -300,7 +351,7 @@ void SJF(int size,process processes [] )
                 }
                 if (!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p] = waiting.front();
+                    WillGoToTheQ[idx_p] = waiting.top();
                     waiting.pop();
                 }
                 processor[idx_p]=-1;
@@ -308,7 +359,7 @@ void SJF(int size,process processes [] )
 
         }
         match_prefrences(processor,WillGoToTheQ,processes);
-        IO_handler(size,processes,waiting,finished_processes,t);
+        IO_handler_bypq(size,processes,waiting,finished_processes,t);
 
         if (finished_processes == size)
         {
@@ -318,14 +369,14 @@ void SJF(int size,process processes [] )
 
     }
 }
-void replace_process(int idx_p,int processor [],queue<int>&my_queue,process processes[])
+void replace_process(int idx_p,int * processor ,priority_queue<int,vector<int>,CompareProcess> &my_queue,process processes[])
 {
-   int waiting_process_current_time_left= processes[my_queue.front()].current_brust_time -processes[my_queue.front()].time_consumed;
+   int waiting_process_current_time_left= processes[my_queue.top()].current_brust_time - processes[my_queue.top()].time_consumed;
    int running_process_time_left= processes[processor[idx_p]].current_brust_time - processes[processor[idx_p]].time_consumed;
    if(waiting_process_current_time_left < running_process_time_left) // u will switch between process on cpu with process on waiting
    {
        my_queue.push(processor[idx_p]);
-       processor[idx_p]=my_queue.front();
+       processor[idx_p]=my_queue.top();
        my_queue.pop();
    }
 }
@@ -335,7 +386,9 @@ void STCF(int size,process processes [])
     int finished_processes=0,processor[4],WillGoToTheQ[4],i=0,pr;
     memset(processor,-1,sizeof processor);
     memset(WillGoToTheQ,-1,sizeof WillGoToTheQ);
-    queue<int>waiting;
+//    queue<int>waiting;
+    CompareProcess cmp (processes);
+    priority_queue<int,vector<int>,CompareProcess>waiting(cmp);
     for(int t=0;;t++)
     {
         int idx_p=0;
@@ -357,8 +410,6 @@ void STCF(int size,process processes [])
             processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
             i++;
         }
-//        if(!waiting.empty())
-//            sort_queue(waiting,processes);
         for(idx_p =0 ;idx_p<4;idx_p++)
         {
             if(processor[idx_p]==-1) // means that , that processor is ideal
@@ -366,13 +417,14 @@ void STCF(int size,process processes [])
                 output[t][idx_p]="i";
                 if(!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p]=waiting.front();
+                    WillGoToTheQ[idx_p]=waiting.top();
                     waiting.pop();
                 }
                 continue;
             }
-            replace_process(idx_p,processor,waiting,processes);
-            sort_queue(waiting,processes);
+            if(!waiting.empty())
+                replace_process(idx_p,processor,waiting,processes);
+//            sort_queue(waiting,processes);
             pr = processor[idx_p];  // index of the process in the processor
             output[t][idx_p]=processes[pr].process_name;
             processes[pr].time_consumed++;
@@ -394,7 +446,7 @@ void STCF(int size,process processes [])
                 }
                 if (!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p] = waiting.front();
+                    WillGoToTheQ[idx_p] = waiting.top();
                     waiting.pop();
                 }
                 processor[idx_p]=-1;
@@ -402,7 +454,7 @@ void STCF(int size,process processes [])
 
         }
         match_prefrences(processor,WillGoToTheQ,processes);
-        IO_handler(size,processes,waiting,finished_processes,t);
+        IO_handler_bypq(size,processes,waiting,finished_processes,t);
 
         if (finished_processes == size)
         {
