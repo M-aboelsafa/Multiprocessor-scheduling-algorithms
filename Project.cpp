@@ -221,6 +221,7 @@ void Input(int n, process processes[])
         processes[i].phase_idx = 0;
         processes[i].time_consumed = 0;
         processes[i].process_idx = i;
+        processes[i].state = 1;
         // processes[i].current_brust_time = processes[i].phases[0].first;
     }
 }
