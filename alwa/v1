@@ -60,11 +60,7 @@ struct CompareProcess {
     const process *data;
     CompareProcess(const process* d) : data(d) {}
     bool operator()(int a, int b) const {
-        // Customize the comparison based on the variable
-       // if(data[a].arrive_time ==data[b].arrive_time)
-            return (data[a].current_brust_time - data[a].time_consumed) > (data[b].current_brust_time - data[a].time_consumed);
-        /*else
-            return data[a].arrive_time > data[b].arrive_time;*/
+        return (data[a].current_brust_time - data[a].time_consumed) > (data[b].current_brust_time - data[a].time_consumed);
     }
 };
 
@@ -80,7 +76,7 @@ void print(int endtime)
         cout << output[endtime][j] << "\n";
     }
 }
-void IO_handler(int n, process processes[], queue<int> &my_queue, int &finised_processes, int t)
+/*void IO_handler(int n, process processes[], queue<int> &my_queue, int &finised_processes, int t)
 {
     for (int i = 0; i < n; i++)
     {
@@ -113,7 +109,7 @@ void IO_handler(int n, process processes[], queue<int> &my_queue, int &finised_p
             }
         }
     }
-}
+}*/
 void IO_handler_bypq(int n, process processes[], priority_queue<int,vector<int>,CompareProcess> &my_queue, int &finised_processes, int t)
 {
     for (int i = 0; i < n; i++)
@@ -179,6 +175,7 @@ void match_prefrences(int processor[], int WillGoToTheQ[], process processes[])
         }
     }
 }
+
 /*void FCFS (int size , process processes [])
 {
     int finished_processes=0,processor[4],WillGoToTheQ[4],i=0,pr;
@@ -258,6 +255,7 @@ void match_prefrences(int processor[], int WillGoToTheQ[], process processes[])
     }
 }*/
 
+
 bool comparedByBurst(const process& p1,const process& p2)
 {
     if(p1.arrive_time == p2.arrive_time)
@@ -292,9 +290,9 @@ void SJF(int size,process processes [] )
         }
         while(i<size && processes[i].arrive_time <=t ) // processes arrived but there is no place at cpu so it will go in waiting queue
         {
-            waiting.push(i);
             processes[i].state = processes[i].phases[processes[i].phase_idx].second;
             processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+            waiting.push(i);
             i++;
         }
         for(idx_p =0 ;idx_p<4;idx_p++)
@@ -348,7 +346,8 @@ void SJF(int size,process processes [] )
 
     }
 }
-void replace_process(int * processor ,priority_queue<int,vector<int>,CompareProcess> &my_queue,process processes[])
+
+/*void replace_process(int * processor ,priority_queue<int,vector<int>,CompareProcess> &my_queue,process processes[])
 {
     for(int i=0;i<4;i++)
     {
@@ -362,7 +361,7 @@ void replace_process(int * processor ,priority_queue<int,vector<int>,CompareProc
                break;
            }
     }
-}
+}*/
 void STCF(int size,process processes [])
 {
     sort(processes,processes+size, comparedByBurst);
@@ -384,34 +383,35 @@ void STCF(int size,process processes [])
                 processes[i].last_processor = idx_p;
                 i++;
             }
-          /* else // some process is at cpu right now
-            {
-                int waiting_process_current_time_left= processes[i].phases[processes[i].phase_idx].first;
-                int running_process_time_left= processes[processor[idx_p]].current_brust_time - processes[processor[idx_p]].time_consumed;
-                if(waiting_process_current_time_left < running_process_time_left)
-                {
-                    waiting.push(processor[idx_p]);
-                    processes[i].current_brust_time=processes[i].phases[processes[i].phase_idx].first;
-                    processes[i].state = processes[i].phases[processes[i].phase_idx].second;
-                    processes[i].last_processor = idx_p;
-                    processor[idx_p]=i;
-                }
-                else
-                {
-                    processor[idx_p] = i;
-                    processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
-                    processes[i].state = processes[i].phases[processes[i].phase_idx].second;
-                    processes[i].last_processor = idx_p;
-                }
-                i++;
-            }*/
+            /* else // some process is at cpu right now
+              {
+                  int waiting_process_current_time_left= processes[i].phases[processes[i].phase_idx].first;
+                  int running_process_time_left= processes[processor[idx_p]].current_brust_time - processes[processor[idx_p]].time_consumed;
+                  if(waiting_process_current_time_left < running_process_time_left)
+                  {
+                      waiting.push(processor[idx_p]);
+                      processes[i].current_brust_time=processes[i].phases[processes[i].phase_idx].first;
+                      processes[i].state = processes[i].phases[processes[i].phase_idx].second;
+                      processes[i].last_processor = idx_p;
+                      processor[idx_p]=i;
+                  }
+                  else
+                  {
+                      processor[idx_p] = i;
+                      processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+                      processes[i].state = processes[i].phases[processes[i].phase_idx].second;
+                      processes[i].last_processor = idx_p;
+                  }
+                  i++;
+              }*/
         }
         int replace=0;
         while(i<size && processes[i].arrive_time <=t ) // processes arrived but there is no place at cpu so it will go in waiting queue
         {
-            waiting.push(i);
+
             processes[i].state = processes[i].phases[processes[i].phase_idx].second;
             processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+            waiting.push(i);
             i++;
             /*if(replace < 4)
                 replace_process(processor,waiting,processes),replace++;*/
@@ -486,7 +486,7 @@ int main() {
     cin >> n;
     process processes[n];
     Input(n, processes);
-    STCF(n,processes);
+    SJF(n,processes);
     return 0;
 
 }
