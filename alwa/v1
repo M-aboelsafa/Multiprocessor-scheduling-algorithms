@@ -365,7 +365,7 @@ void replace_process(int * processor ,priority_queue<int,vector<int>,CompareProc
 }
 void STCF(int size,process processes [])
 {
-//    sort(processes,processes+size, comparedByBurst);
+    sort(processes,processes+size, comparedByBurst);
     int finished_processes=0,processor[4],WillGoToTheQ[4],i=0,pr;
     memset(processor,-1,sizeof processor);
     memset(WillGoToTheQ,-1,sizeof WillGoToTheQ);
@@ -413,8 +413,20 @@ void STCF(int size,process processes [])
             processes[i].state = processes[i].phases[processes[i].phase_idx].second;
             processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
             i++;
-            if(replace < 4)
-                replace_process(processor,waiting,processes),replace++;
+            /*if(replace < 4)
+                replace_process(processor,waiting,processes),replace++;*/
+            for(int q=0;q<4;q++)
+            {
+                if(processor[q]!= -1)
+                {
+                    waiting.push(processor[q]);
+                }
+            }
+            for(int q=0;q<4;q++)
+            {
+                processor[q]=waiting.top();
+                waiting.pop();
+            }
         }
 
         for(idx_p =0 ;idx_p<4;idx_p++)
@@ -479,10 +491,9 @@ int main() {
 
 }
 /*
+ *
  * 5
-A
-2
-0
+A 2 0
 3 EXE
 2 I/O
 B 3 1
@@ -500,3 +511,44 @@ E 3 4
 1 I/O
 2 EXE
  * */
+
+/*
+ *
+ *
+7
+A 4 0
+3 EXE
+2 I/O
+20 EXE
+1 I/O
+
+B 3 0
+6 EXE
+2 I/O
+1 EXE
+
+C 3 0
+10 EXE
+2 I/O
+10 EXE
+
+D 3 0
+6 EXE
+3 I/O
+6 EXE
+
+E 3 0
+6 EXE
+3 I/O
+6 EXE
+
+F 3 0
+6 EXE
+3 I/O
+6 EXE
+
+X 3 2
+1 EXE
+1 I/O
+10 EXE
+ */
