@@ -263,7 +263,7 @@ void match_prefrences(int processor[], int WillGoToTheQ[], process processes[])
 }*/
 
 
-bool comparedByBurst(const process& p1,const process& p2)
+bool comparedByBurst(const process& p1,const process& p2) //ascending order
 {
     if(p1.arrive_time == p2.arrive_time)
         return p1.phases[0].first <p2.phases[0].first;
@@ -272,7 +272,11 @@ bool comparedByBurst(const process& p1,const process& p2)
 }
 
 
+bool comareByPriority(const process& p1,const process& p2) // ascending order
+{
+    return p1.priority < p2.priority;
 
+}
 
 void SJF(int size,process processes [] )
 {
