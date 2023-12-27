@@ -20,68 +20,33 @@ int calculateTickets(process p)
     return time + execution_requests * 20 + io_requests * 30;
 }
 
-void strideScheduler(int n, process processes[])
+void strideScheduler(int size, process processes[])
 {
-    queue<int> waiting, q, q2;
-    int finished_processes = 0, WillGoToTheQ[4], processor[4], p_num, i = 0;
-    memset(processor, -1, sizeof(processor));
-    memset(WillGoToTheQ, -1, sizeof(WillGoToTheQ));
-
-    for (int t = 0;; ++t)
+    int finished_processes = 0, processor[4], WillGoToTheQ[4], i = 0, pr;
+    memset(processor, -1, sizeof processor);
+    memset(WillGoToTheQ, -1, sizeof WillGoToTheQ);
+    CompareProcessstride cmp(processes);
+    priority_queue<int, vector<int>, CompareProcessstride> waiting(cmp);
+    for (int t = 0;; t++)
     {
-        bool completed = true;
         int idx_p = 0;
-        vector<int> indices(n);
-        if (i <= 4)
-        {
-            iota(indices.begin(), indices.end(), 0); // Fill with 0 to n-1
-
-            // Sort the indices based on pass_value of processes
-            sort(indices.begin(), indices.end(), [&](int a, int b)
-                 { return processes[a].arrive_time < processes[b].arrive_time; });
-
-            // Push the sorted indices into the queue
-            for (int idx : indices)
-            {
-                if (processes[idx].state != 2)
-                    q.push(processes[idx].process_idx);
-            }
-        }
-        else
-        {
-            iota(indices.begin(), indices.end(), 0); // Fill with 0 to n-1
-
-            // Sort the indices based on pass_value of processes
-            sort(indices.begin(), indices.end(), [&](int a, int b)
-                 { return processes[a].pass_value < processes[b].pass_value; });
-
-            // Push the sorted indices into the queue
-            for (int idx : indices)
-            {
-                if (processes[idx].state != 2)
-                    q.push(processes[idx].process_idx);
-            }
-        }
-
-        for (idx_p = 0; idx_p < 4 && !q.empty() && processes[q.front()].arrive_time <= t; idx_p++)
+        for (idx_p = 0; idx_p < 4 && i < size && processes[i].arrive_time <= t; ++idx_p) // if processor is idle and processes
         {
             if (processor[idx_p] == -1)
             {
-                processor[idx_p] = q.front();
-                processes[q.front()].current_brust_time = processes[q.front()].phases[processes[q.front()].phase_idx].first;
-                processes[q.front()].state = processes[q.front()].phases[processes[q.front()].phase_idx].second;
-                processes[q.front()].last_processor = idx_p;
+                processor[idx_p] = i;
+                processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+                processes[i].state = processes[i].phases[processes[i].phase_idx].second;
+                processes[i].last_processor = idx_p;
                 i++;
-                q.pop();
             }
         }
-
-        while (!q.empty() && processes[q.front()].arrive_time <= t)
+        while (i < size && processes[i].arrive_time <= t) // processes arrived but there is no place at cpu so it will go in waiting queue
         {
-            waiting.push(q.front());
-            processes[q.front()].current_brust_time = processes[q.front()].phases[processes[q.front()].phase_idx].first;
-            processes[q.front()].state = processes[q.front()].phases[processes[q.front()].phase_idx].second;
-            q.pop();
+            processes[i].state = processes[i].phases[processes[i].phase_idx].second;
+            processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+            waiting.push(i);
+            i++;
         }
         for (idx_p = 0; idx_p < 4; idx_p++)
         {
@@ -90,49 +55,45 @@ void strideScheduler(int n, process processes[])
                 output[t][idx_p] = "i";
                 if (!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p] = waiting.front();
+                    WillGoToTheQ[idx_p] = waiting.top();
                     waiting.pop();
                 }
                 continue;
             }
-            p_num = processor[idx_p]; // index of the process in the processor
-            output[t][idx_p] = processes[p_num].process_name;
-            processes[p_num].pass_value += processes[p_num].stride;
-            processes[p_num].time_consumed++;
-            if (processes[p_num].time_consumed == processes[p_num].current_brust_time) // proceses finished exec
+            pr = processor[idx_p]; // index of the process in the processor
+            output[t][idx_p] = processes[pr].process_name;
+            processes[pr].time_consumed++;
+            processes[pr].pass_value += processes[pr].stride;
+            if (processes[pr].time_consumed == processes[pr].current_brust_time) // proceses finished exec
             {
-                processes[p_num].phase_idx++;
-                processes[p_num].time_consumed = 0;
-                if (processes[p_num].phase_idx < processes[p_num].n_phases) // still want more ?
+                processes[pr].phase_idx++;
+                processes[pr].time_consumed = 0;
+                if (processes[pr].phase_idx < processes[pr].n_phases) // still want more ?
                 {
-                    processes[p_num].state = processes[p_num].phases[processes[p_num].phase_idx].second;
-                    processes[p_num].current_brust_time = processes[p_num].phases[processes[p_num].phase_idx].first;
+                    processes[pr].state = processes[pr].phases[processes[pr].phase_idx].second;
+                    processes[pr].current_brust_time = processes[pr].phases[processes[pr].phase_idx].first;
                 }
-                else
+                else // process finished
                 {
                     finished_processes++;
-                    processes[p_num].state = 2;
-                    processes[p_num].complete_time = t;
-                    processes[p_num].turn_around_time = t - processes[p_num].arrive_time;
+                    processes[pr].state = 2;
+                    processes[pr].complete_time = t;
+                    processes[pr].turn_around_time = t - processes[pr].arrive_time;
                 }
                 if (!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p] = waiting.front();
+                    WillGoToTheQ[idx_p] = waiting.top();
                     waiting.pop();
                 }
                 processor[idx_p] = -1;
             }
         }
-        while (!q.empty())
-        {
-            q.pop();
-        }
         match_prefrences(processor, WillGoToTheQ, processes);
-        IO_handler(n, processes, waiting, finished_processes, t);
+        IO_handler_bypq_stride(size, processes, waiting, finished_processes, t);
 
-        if (completed)
+        if (finished_processes == size)
         {
-            print(t, processes, n);
+            print(t, processes, size);
             return;
         }
     }
