@@ -8,7 +8,7 @@ void FCFS(int size, process processes[])
     for (int t = 0;; t++)
     {
         int idx_p = 0;
-        for (idx_p = 0; idx_p < 4 && i < size && processes[i].arrive_time <= t; ++idx_p) // if processor is ideal and processes
+        for (idx_p = 0; idx_p < 4 && i < size && processes[i].arrive_time <= t; ++idx_p) // if processor is idle and processes
         {
             if (processor[idx_p] == -1)
             {
@@ -28,7 +28,7 @@ void FCFS(int size, process processes[])
         }
         for (idx_p = 0; idx_p < 4; idx_p++)
         {
-            if (processor[idx_p] == -1) // means that , that processor is ideal
+            if (processor[idx_p] == -1) // means that , that processor is idle
             {
                 output[t][idx_p] = "i";
                 if (!waiting.empty())
