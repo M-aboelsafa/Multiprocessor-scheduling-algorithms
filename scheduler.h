@@ -44,6 +44,15 @@ struct CompareProcesspriority
         return data[a].priority > data[b].priority;
     }
 };
+struct CompareProcessstride
+{
+    const process *data;
+    CompareProcessstride(const process *d) : data(d) {}
+    bool operator()(int a, int b) const
+    {
+        return data[a].pass_value > data[b].pass_value;
+    }
+};
 bool comareByPriority(const process &p1, const process &p2); // ascending order
 bool comparedByBurst(const process &p1, const process &p2);
 void print(int endtime, process processes[], int n);
@@ -51,6 +60,7 @@ void IO_handler(int n, process processes[], queue<int> &my_queue, int &finised_p
 void IO_handler_MLFQ(int n, process processes[], queue<int> my_queue[], int &finised_processes, int t);
 void IO_handler_bypq(int n, process processes[], priority_queue<int, vector<int>, CompareProcess> &my_queue, int &finised_processes, int t);
 void IO_handler_bypq_priority(int n, process processes[], priority_queue<int, vector<int>, CompareProcesspriority> &my_queue, int &finised_processes, int t);
+void IO_handler_bypq_stride(int n, process processes[], priority_queue<int, vector<int>, CompareProcessstride> &my_queue, int &finised_processes, int t);
 void match_prefrences(int processor[], int WillGoToTheQ[], process processes[]);
 
 void changeThePriorty(int n, process processes[]);

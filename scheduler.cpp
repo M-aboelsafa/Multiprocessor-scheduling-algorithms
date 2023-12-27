@@ -1,6 +1,6 @@
 #include "scheduler.h"
 
-vector<vector<string>> output(N, vector<string>(4));// string V[N][4];
+vector<vector<string>> output(N, vector<string>(4)); // string V[N][4];
 
 bool comparedByBurst(const process &p1, const process &p2)
 {
@@ -24,7 +24,7 @@ void print(int endtime, process processes[], int n)
             cout << output[i][j] << " | ";
             cout << i << " ";
             cout << " ";
-            this_thread::sleep_for(std::chrono::seconds(1));
+            // this_thread::sleep_for(std::chrono::seconds(1));
         }
         cout << output[endtime][j] << "\n\n";
     }
@@ -175,6 +175,41 @@ void IO_handler_bypq_priority(int n, process processes[], priority_queue<int, ve
         }
     }
 }
+void IO_handler_bypq_stride(int n, process processes[], priority_queue<int, vector<int>, CompareProcessstride> &my_queue, int &finised_processes, int t)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (processes[i].state == 0) // state IO
+        {
+            // cout << "IO handler " << i << "\n";
+            processes[i].time_consumed++;
+            if (processes[i].time_consumed == processes[i].current_brust_time) // IO Finished
+            {
+                processes[i].time_consumed = 0;
+                processes[i].phase_idx++;
+                if (processes[i].phase_idx < processes[i].n_phases)
+                {
+                    processes[i].state = processes[i].phases[processes[i].phase_idx].second;
+                    processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+                    if (processes[i].state)
+                    {
+                        // cout << "PUSH\n";
+                        my_queue.push(i);
+                    }
+                }
+                else
+                {
+                    // cout << "DONE\n";
+                    processes[i].state = 2;
+                    (finised_processes)++;
+                    processes[i].complete_time = t;
+                    processes[i].turn_around_time = t - processes[i].arrive_time;
+                }
+            }
+        }
+    }
+}
+
 void match_prefrences(int processor[], int WillGoToTheQ[], process processes[])
 {
     // First loop: Assign processes to processors if the processor is available
