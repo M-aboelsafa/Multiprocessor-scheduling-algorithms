@@ -1,0 +1,220 @@
+RR
+3
+A 2 0
+7 EXE
+5 I/O
+
+B 5 3
+4 EXE
+5 I/O
+6 EXE
+7 I/O
+2 EXE
+
+C 6 7
+3 EXE
+5 I/O
+6 EXE
+7 I/O
+2 EXE
+3 I/O
+
+RR
+1
+A 3 0
+1 EXE
+4 I/O
+3 EXE
+
+RR
+1
+A 1 0
+1 EXE
+
+RR
+6
+A 1 0
+1 EXE
+A 1 0
+1 EXE
+A 1 0
+1 EXE
+A 1 0
+1 EXE
+A 1 0
+1 EXE
+A 1 0
+1 EXE
+
+MLFQ
+10
+A 3 0
+9 EXE
+2 I/O
+5 EXE
+
+B 3 0
+7 EXE
+7 I/O
+7 EXE
+
+C 1 0
+12 EXE
+
+D 1 0
+20 EXE
+
+E 1 0
+10 EXE
+
+F 3 1
+5 EXE
+4 I/O
+6 EXE
+
+X 5 4
+1 EXE
+2 I/O
+1 EXE
+2 I/O
+1 EXE
+
+M 5 5
+1 EXE
+2 I/O
+1 EXE
+2 I/O
+1 EXE
+
+
+N 5 11
+1 EXE
+2 I/O
+1 EXE
+2 I/O
+1 EXE
+
+L 5 15
+1 EXE
+2 I/O
+1 EXE
+2 I/O
+1 EXE
+
+
+MLFQ
+7
+A 4 0
+3 EXE
+2 I/O
+20 EXE
+1 I/O
+
+B 3 0
+6 EXE
+2 I/O
+1 EXE
+
+C 3 0
+10 EXE
+2 I/O
+10 EXE
+
+D 3 0
+6 EXE
+3 I/O
+6 EXE
+
+E 3 0
+6 EXE
+3 I/O
+6 EXE
+
+F 3 0
+6 EXE
+3 I/O
+6 EXE
+
+X 3 2
+1 EXE
+1 I/O
+10 EXE
+
+
+MLFQ
+8
+A 3 0
+9 EXE
+2 I/O
+5 EXE
+
+B 1 0
+7 EXE
+
+C 1 0
+12 EXE
+
+D 1 0
+20 EXE
+
+E 1 0
+10 EXE
+
+F 3 1
+5 EXE
+4 I/O
+6 EXE
+
+X 5 4
+1 EXE
+2 I/O
+1 EXE
+2 I/O
+1 EXE
+
+M 5 5
+1 EXE
+2 I/O
+1 EXE
+2 I/O
+1 EXE
+
+-----------------------------------------------
+
+STCF
+7
+A 4 0
+3 EXE
+2 I/O
+20 EXE
+1 I/O
+
+B 3 0
+6 EXE
+2 I/O
+1 EXE
+
+C 3 0
+10 EXE
+2 I/O
+10 EXE
+
+D 3 0
+6 EXE
+3 I/O
+6 EXE
+
+E 3 0
+6 EXE
+3 I/O
+6 EXE
+
+F 3 0
+6 EXE
+3 I/O
+6 EXE
+
+X 3 2
+1 EXE
+1 I/O
+10 EXE

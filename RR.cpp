@@ -92,7 +92,7 @@ void round_robin(int n, process processes[])
         // 5lsna
         if (finised_processes == n)
         {
-            print(t);
+            print(t, processes, n);
             return;
         }
     }

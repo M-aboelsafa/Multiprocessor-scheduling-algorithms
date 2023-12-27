@@ -179,7 +179,7 @@ void MLFQ(int n, process processes[])
         // THE FUNCTION FINISHED SUCCESFULLY
         if (finised_processes == n)
         {
-            print(t);
+            print(t, processes, n);
             return;
         }
 

@@ -1,10 +1,13 @@
 #include "scheduler.h"
-void FCFS(int size, process processes[])
+
+void Priority(int size, process processes[])
 {
+    sort(processes, processes + size, comareByPriority);
     int finished_processes = 0, processor[4], WillGoToTheQ[4], i = 0, pr;
     memset(processor, -1, sizeof processor);
     memset(WillGoToTheQ, -1, sizeof WillGoToTheQ);
-    queue<int> waiting;
+    CompareProcesspriority cmp(processes);
+    priority_queue<int, vector<int>, CompareProcesspriority> waiting(cmp);
     for (int t = 0;; t++)
     {
         int idx_p = 0;
@@ -21,9 +24,9 @@ void FCFS(int size, process processes[])
         }
         while (i < size && processes[i].arrive_time <= t) // processes arrived but there is no place at cpu so it will go in waiting queue
         {
-            waiting.push(i);
             processes[i].state = processes[i].phases[processes[i].phase_idx].second;
             processes[i].current_brust_time = processes[i].phases[processes[i].phase_idx].first;
+            waiting.push(i);
             i++;
         }
         for (idx_p = 0; idx_p < 4; idx_p++)
@@ -33,7 +36,7 @@ void FCFS(int size, process processes[])
                 output[t][idx_p] = "i";
                 if (!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p] = waiting.front();
+                    WillGoToTheQ[idx_p] = waiting.top();
                     waiting.pop();
                 }
                 continue;
@@ -59,14 +62,14 @@ void FCFS(int size, process processes[])
                 }
                 if (!waiting.empty())
                 {
-                    WillGoToTheQ[idx_p] = waiting.front();
+                    WillGoToTheQ[idx_p] = waiting.top();
                     waiting.pop();
                 }
                 processor[idx_p] = -1;
             }
         }
         match_prefrences(processor, WillGoToTheQ, processes);
-        IO_handler(size, processes, waiting, finished_processes, t);
+        IO_handler_bypq_priority(size, processes, waiting, finished_processes, t);
 
         if (finished_processes == size)
         {

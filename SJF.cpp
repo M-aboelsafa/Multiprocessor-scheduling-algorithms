@@ -73,7 +73,7 @@ void SJF(int size, process processes[])
 
         if (finished_processes == size)
         {
-            print(t);
+            print(t, processes, size);
             return;
         }
     }

@@ -1,0 +1,37 @@
+RR
+7
+A 4 0
+3 EXE
+2 I/O
+20 EXE
+1 I/O
+
+B 3 0
+6 EXE
+2 I/O
+1 EXE
+
+C 3 0
+10 EXE
+2 I/O
+10 EXE
+
+D 3 0
+6 EXE
+3 I/O
+6 EXE
+
+E 3 0
+6 EXE
+3 I/O
+6 EXE
+
+F 3 0
+6 EXE
+3 I/O
+6 EXE
+
+X 3 2
+1 EXE
+1 I/O
+10 EXE
