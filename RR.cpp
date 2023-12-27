@@ -11,6 +11,7 @@ void round_robin(int n, process processes[])
         // push in queue
         int idx_p = 0;
 
+        //Which process arive time came to enter Q or CPU
         for (idx_p = 0; idx_p < 4 && i < n && processes[i].arrive_time <= t; ++idx_p)
         {
             if (processor[idx_p] == -1)
@@ -40,7 +41,7 @@ void round_robin(int n, process processes[])
                 output[t][idx_p] = "i";
                 if (!my_queue.empty())
                 {
-                    WillGoToTheQ[idx_p] = my_queue.front(); /////law zawd t7t
+                    WillGoToTheQ[idx_p] = my_queue.front(); 
                     my_queue.pop();
                 }
                 continue;

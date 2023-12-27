@@ -32,7 +32,7 @@ struct CompareProcess
     CompareProcess(const process *d) : data(d) {}
     bool operator()(int a, int b) const
     {
-        return (data[a].current_brust_time - data[a].time_consumed) > (data[b].current_brust_time - data[a].time_consumed);
+        return (data[a].current_brust_time - data[a].time_consumed) > (data[b].current_brust_time - data[b].time_consumed);
     }
 };
 struct CompareProcesspriority

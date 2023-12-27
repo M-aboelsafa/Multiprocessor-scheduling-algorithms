@@ -7,7 +7,7 @@ void SJF(int size, process processes[])
     memset(processor, -1, sizeof processor);
     memset(WillGoToTheQ, -1, sizeof WillGoToTheQ);
     CompareProcess cmp(processes);
-    priority_queue<int, vector<int>, CompareProcess> waiting(cmp);
+    priority_queue<int, vector<int>, CompareProcess> waiting(cmp);  //O(logn)
     for (int t = 0;; t++)
     {
         int idx_p = 0;

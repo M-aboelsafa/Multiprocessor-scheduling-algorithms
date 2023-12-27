@@ -1,6 +1,6 @@
 #include "scheduler.h"
 
-vector<vector<string>> output(N, vector<string>(4));
+vector<vector<string>> output(N, vector<string>(4));// string V[N][4];
 
 bool comparedByBurst(const process &p1, const process &p2)
 {

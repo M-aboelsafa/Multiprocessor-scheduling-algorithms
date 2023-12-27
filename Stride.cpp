@@ -2,14 +2,18 @@
 
 int calculateTickets(process p)
 {
-    int time =0;
+    int time = 0;
     int execution_requests = 0;
     int io_requests = 0;
-    for (int j = 0; j < p.n_phases; ++j) {
+    for (int j = 0; j < p.n_phases; ++j)
+    {
         time += p.phases[j].first;
-        if (p.phases[j].second == 1) {
+        if (p.phases[j].second == 1)
+        {
             execution_requests++;
-        } else {
+        }
+        else
+        {
             io_requests++;
         }
     }
@@ -81,7 +85,7 @@ void strideScheduler(int n, process processes[])
         }
         for (idx_p = 0; idx_p < 4; idx_p++)
         {
-            if (processor[idx_p] == -1) // means that , that processor is ideal
+            if (processor[idx_p] == -1) // means that , that processor is idle
             {
                 output[t][idx_p] = "i";
                 if (!waiting.empty())
@@ -106,6 +110,7 @@ void strideScheduler(int n, process processes[])
                 }
                 else
                 {
+                    finished_processes++;
                     processes[p_num].state = 2;
                     processes[p_num].complete_time = t;
                     processes[p_num].turn_around_time = t - processes[p_num].arrive_time;
@@ -124,14 +129,6 @@ void strideScheduler(int n, process processes[])
         }
         match_prefrences(processor, WillGoToTheQ, processes);
         IO_handler(n, processes, waiting, finished_processes, t);
-
-        for (int i = 0; i < n; i++)
-        {
-            if (processes[i].state != 2)
-            {
-                completed = false;
-            }
-        }
 
         if (completed)
         {
