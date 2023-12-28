@@ -62,8 +62,8 @@ g++ *.cpp -o out
 ```
 
 ## contributing
-Mohamed Yousef Helmy
-Mohamed Ahmed Rabea
-Mostafa Wael Hussien
-Ahmed Sayed Mohamed
-Ali Abdelmenaim Mohamed
+1. Mohamed Yousef Helmy
+2. Mohamed Ahmed Rabea
+3. Mostafa Wael Hussien
+4. Ahmed Sayed Mohamed
+5. Ali Abdelmenaim Mohamed
